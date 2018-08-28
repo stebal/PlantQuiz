@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var imageTaken: ImageView? = null
 
     val OPEN_CAMERA_BUTTON_REQUEST_ID = 1000
+    val OPEN_PHOTO_GALLERY_BUTTON_REQUEST_ID = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,14 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(cameraIntent,OPEN_CAMERA_BUTTON_REQUEST_ID)
         })
 
+        photoGalleryButton?.setOnClickListener(View.OnClickListener {
+
+            Toast.makeText(this, "THE Photo Gallery Button is Clicked", Toast.LENGTH_SHORT).show()
+
+            val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent,OPEN_PHOTO_GALLERY_BUTTON_REQUEST_ID)
+        })
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -70,6 +79,18 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+        if (requestCode == OPEN_PHOTO_GALLERY_BUTTON_REQUEST_ID) {
+
+            if (resultCode == Activity.RESULT_OK) {
+
+                val contentURI = data?.getData()
+                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+
+                imageTaken?.setImageBitmap(bitmap)
+
+            }
+        }
+
     }
 
     fun button1IsClicked(buttonView: View) {
