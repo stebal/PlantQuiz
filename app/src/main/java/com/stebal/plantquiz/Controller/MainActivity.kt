@@ -1,28 +1,33 @@
-package com.stebal.plantquiz
+package com.stebal.plantquiz.Controller
 
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.Image
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import com.stebal.plantquiz.Model.DownloadingObject
+import com.stebal.plantquiz.Model.Plant
+import com.stebal.plantquiz.R
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private var cameraButton: Button? = null
     private var photoGalleryButton: Button? = null
     private var imageTaken: ImageView? = null
+
 
     val OPEN_CAMERA_BUTTON_REQUEST_ID = 1000
     val OPEN_PHOTO_GALLERY_BUTTON_REQUEST_ID = 1000
@@ -48,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         cameraButton = findViewById(R.id.btnOpenCamera)
         photoGalleryButton = findViewById(R.id.btnOpenPhotoGallery)
         imageTaken = findViewById(R.id.imgTaken)
+
+
 
         cameraButton?.setOnClickListener(View.OnClickListener {
 
@@ -113,12 +120,18 @@ class MainActivity : AppCompatActivity() {
     fun button4IsClicked(buttonView: View) {
 
         Toast.makeText(this, "THE Button 4 is Clicked", Toast.LENGTH_SHORT).show()
+
     }
 
     inner class DownloadingPlantTask: AsyncTask<String, Int, List<Plant>>() {
 
         override fun doInBackground(vararg param: String?): List<Plant>? {
             // can access background thread. Not user interface.
+
+            val downloadingObject: DownloadingObject = DownloadingObject()
+            var jsonData = downloadingObject.downloadJSONDataFromLink("http://plantplaces.com/perl/mobile/flashcard.pl")
+
+            Log.i("JSON", jsonData)
 
             return null
         }
@@ -144,5 +157,19 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun imageViewIsClicked(view: View){
+
+        val randomNumber: Int = (Math.random()* 6).toInt() + 1
+        Log.i("TAG", "THE RANDOM NUMBER IS : $randomNumber")
+
+        when(randomNumber) {
+
+            1 -> btnOpenCamera.setBackgroundColor(Color.YELLOW)
+            2 -> btnOpenPhotoGallery.setBackgroundColor(Color.MAGENTA)
+        }
+
+
     }
 }
